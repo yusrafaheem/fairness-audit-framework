@@ -6,7 +6,6 @@ build-backend = "setuptools.build_meta"
 name = "fairaudit"
 version = "0.1.0"
 description = "Model-agnostic algorithmic fairness auditing framework (demographic parity, equalized odds, predictive parity) with severity scoring and remediation guidance."
-readme = "../README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
 authors = [{ name = "Yusra Faheem" }]
