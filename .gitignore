@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Node
+node_modules/
+dist/
+.vite/
+npm-debug.log*
+
+# Env
+.env
+.env.local
+
+# OS
+.DS_Store
+
+# Ad-hoc local audit output (not the committed seed data in server/data/)
+engine/reports/
