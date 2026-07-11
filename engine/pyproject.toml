@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fairaudit"
+version = "0.1.0"
+description = "Model-agnostic algorithmic fairness auditing framework (demographic parity, equalized odds, predictive parity) with severity scoring and remediation guidance."
+readme = "../README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Yusra Faheem" }]
+dependencies = [
+    "scikit-learn>=1.4,<2.0",
+    "fairlearn>=0.10,<0.11",
+    "pandas>=2.0,<3.0",
+    "numpy>=1.26,<3.0",
+    "click>=8.1,<9.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0", "pytest-cov>=5.0"]
+
+[project.scripts]
+fairaudit = "fairaudit.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["fairaudit*"]
