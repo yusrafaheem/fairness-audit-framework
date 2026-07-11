@@ -1,0 +1,84 @@
+{
+  "domain": "hiring",
+  "model_kind": "logistic_regression",
+  "generated_at": "2026-07-11T04:11:28.011064+00:00",
+  "n_test_samples": 1200,
+  "sensitive_feature_name": "applicant_group",
+  "groups": [
+    "group_a",
+    "group_b"
+  ],
+  "metrics": [
+    {
+      "metric_name": "demographic_parity",
+      "difference": 0.125,
+      "ratio": 0.5787,
+      "by_group": {
+        "group_a": 0.2966666666666667,
+        "group_b": 0.17166666666666666
+      },
+      "worst_group": "group_b",
+      "best_group": "group_a",
+      "severity_score": 47.5,
+      "severity_tier": "moderate",
+      "passes_four_fifths_rule": false,
+      "remediation": [
+        "Recommended before the next deployment window:",
+        "Audit the training labels for group_b: a selection-rate gap this size often means the *historical decisions* used as labels were biased, not just the features.",
+        "Try Fairlearn's `Reweighing`-style sample weighting or `CorrelationRemover` to reduce the model's reliance on features correlated with the sensitive attribute.",
+        "Consider Fairlearn's `ThresholdOptimizer` to set group-specific decision thresholds that equalize selection rates without retraining the underlying model."
+      ]
+    },
+    {
+      "metric_name": "equalized_odds",
+      "difference": 0.0628,
+      "ratio": null,
+      "by_group": {
+        "group_a": {
+          "tpr": 0.45977011494252873,
+          "fpr": 0.1710914454277286
+        },
+        "group_b": {
+          "tpr": 0.3969465648854962,
+          "fpr": 0.10874200426439233
+        }
+      },
+      "worst_group": "group_b",
+      "best_group": "group_a",
+      "severity_score": 25.1,
+      "severity_tier": "low",
+      "passes_four_fifths_rule": null,
+      "remediation": [
+        "Monitor. Not currently gate-blocking, but track this metric across future model versions to catch drift early."
+      ]
+    },
+    {
+      "metric_name": "predictive_parity",
+      "difference": 0.1693,
+      "ratio": null,
+      "by_group": {
+        "group_a": 0.6741573033707865,
+        "group_b": 0.5048543689320388
+      },
+      "worst_group": "group_b",
+      "best_group": "group_a",
+      "severity_score": 60.8,
+      "severity_tier": "moderate",
+      "passes_four_fifths_rule": null,
+      "remediation": [
+        "Recommended before the next deployment window:",
+        "Recalibrate model scores per group (Platt scaling or isotonic regression fit separately on group_b) so a given confidence score means the same thing for every group.",
+        "If group_b has a smaller precision at the current operating threshold, consider a group-aware threshold via Fairlearn's `ThresholdOptimizer` targeting the `equalized_odds` or a custom precision-parity constraint.",
+        "Investigate whether the base rate (true positive prevalence) differs sharply between groups \u2014 predictive parity is mathematically difficult to satisfy jointly with equalized odds when base rates diverge, so this may require a product/policy decision, not just a modeling one."
+      ]
+    }
+  ],
+  "overall_severity_score": 60.8,
+  "overall_severity_tier": "moderate",
+  "gate_pass": true,
+  "gate_thresholds": {
+    "demographic_parity": 70.0,
+    "equalized_odds": 70.0,
+    "predictive_parity": 70.0
+  }
+}

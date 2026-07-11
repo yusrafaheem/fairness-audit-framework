@@ -1,0 +1,29 @@
+{
+  "generated_by": "scripts/generate_reports.py",
+  "domains": [
+    {
+      "domain": "hiring",
+      "overall_severity_score": 60.8,
+      "overall_severity_tier": "moderate",
+      "gate_pass": true,
+      "n_test_samples": 1200,
+      "generated_at": "2026-07-11T04:11:28.011064+00:00"
+    },
+    {
+      "domain": "lending",
+      "overall_severity_score": 54.5,
+      "overall_severity_tier": "moderate",
+      "gate_pass": true,
+      "n_test_samples": 1200,
+      "generated_at": "2026-07-11T04:11:28.141638+00:00"
+    },
+    {
+      "domain": "content_moderation",
+      "overall_severity_score": 72.0,
+      "overall_severity_tier": "high",
+      "gate_pass": false,
+      "n_test_samples": 1200,
+      "generated_at": "2026-07-11T04:11:28.266537+00:00"
+    }
+  ]
+}

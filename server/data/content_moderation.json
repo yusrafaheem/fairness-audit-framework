@@ -1,0 +1,87 @@
+{
+  "domain": "content_moderation",
+  "model_kind": "logistic_regression",
+  "generated_at": "2026-07-11T04:11:28.266537+00:00",
+  "n_test_samples": 1200,
+  "sensitive_feature_name": "author_group",
+  "groups": [
+    "group_a",
+    "group_b"
+  ],
+  "metrics": [
+    {
+      "metric_name": "demographic_parity",
+      "difference": 0.21,
+      "ratio": 0.7762,
+      "by_group": {
+        "group_a": 0.9383333333333334,
+        "group_b": 0.7283333333333334
+      },
+      "worst_group": "group_b",
+      "best_group": "group_a",
+      "severity_score": 72.0,
+      "severity_tier": "high",
+      "passes_four_fifths_rule": false,
+      "remediation": [
+        "Should block deployment until addressed. Recommended remediation:",
+        "Audit the training labels for group_b: a selection-rate gap this size often means the *historical decisions* used as labels were biased, not just the features.",
+        "Try Fairlearn's `Reweighing`-style sample weighting or `CorrelationRemover` to reduce the model's reliance on features correlated with the sensitive attribute.",
+        "Consider Fairlearn's `ThresholdOptimizer` to set group-specific decision thresholds that equalize selection rates without retraining the underlying model."
+      ]
+    },
+    {
+      "metric_name": "equalized_odds",
+      "difference": 0.2004,
+      "ratio": null,
+      "by_group": {
+        "group_a": {
+          "tpr": 0.9769874476987448,
+          "fpr": 0.7868852459016393
+        },
+        "group_b": {
+          "tpr": 0.8413173652694611,
+          "fpr": 0.5864661654135338
+        }
+      },
+      "worst_group": "group_b",
+      "best_group": "group_a",
+      "severity_score": 70.1,
+      "severity_tier": "high",
+      "passes_four_fifths_rule": null,
+      "remediation": [
+        "Should block deployment until addressed. Recommended remediation:",
+        "Check whether group_b is under-represented in the training set relative to its share of the deployment population \u2014 equalized-odds gaps frequently trace back to class imbalance within a group, not model architecture.",
+        "Apply Fairlearn's `ExponentiatedGradient` reduction with an `EqualizedOdds` constraint to retrain with the fairness objective built in, rather than patched on afterward.",
+        "Review feature engineering for proxies (features that correlate strongly with the sensitive attribute) that may be letting the model reconstruct group membership indirectly."
+      ]
+    },
+    {
+      "metric_name": "predictive_parity",
+      "difference": 0.1865,
+      "ratio": null,
+      "by_group": {
+        "group_a": 0.8294849023090586,
+        "group_b": 0.6430205949656751
+      },
+      "worst_group": "group_b",
+      "best_group": "group_a",
+      "severity_score": 65.9,
+      "severity_tier": "moderate",
+      "passes_four_fifths_rule": null,
+      "remediation": [
+        "Recommended before the next deployment window:",
+        "Recalibrate model scores per group (Platt scaling or isotonic regression fit separately on group_b) so a given confidence score means the same thing for every group.",
+        "If group_b has a smaller precision at the current operating threshold, consider a group-aware threshold via Fairlearn's `ThresholdOptimizer` targeting the `equalized_odds` or a custom precision-parity constraint.",
+        "Investigate whether the base rate (true positive prevalence) differs sharply between groups \u2014 predictive parity is mathematically difficult to satisfy jointly with equalized odds when base rates diverge, so this may require a product/policy decision, not just a modeling one."
+      ]
+    }
+  ],
+  "overall_severity_score": 72.0,
+  "overall_severity_tier": "high",
+  "gate_pass": false,
+  "gate_thresholds": {
+    "demographic_parity": 70.0,
+    "equalized_odds": 70.0,
+    "predictive_parity": 70.0
+  }
+}
