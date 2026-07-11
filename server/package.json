@@ -1,0 +1,20 @@
+{
+  "name": "fairaudit-server",
+  "version": "0.1.0",
+  "private": true,
+  "description": "REST API for the Algorithmic Fairness Auditing Framework. Serves audit reports and exposes a pre-deployment fairness quality gate.",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2"
+  }
+}
