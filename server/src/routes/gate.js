@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { getAuditReport } from "../lib/dataStore.js";
 import { evaluateGate } from "../lib/gate.js";
+import { isSafeDomain } from "../lib/validators.js";
 
 const router = Router();
 
@@ -35,6 +36,9 @@ router.post("/", async (req, res, next) => {
     if (!report) {
       if (!domain) {
         return res.status(400).json({ error: "Provide either `domain` or an inline `report` in the request body." });
+      }
+      if (!isSafeDomain(domain)) {
+        return res.status(400).json({ error: `Invalid domain "${domain}".` });
       }
       report = await getAuditReport(domain);
       if (!report) {

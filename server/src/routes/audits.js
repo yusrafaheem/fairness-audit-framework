@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { getAuditReport, listAudits, saveAuditReport } from "../lib/dataStore.js";
+import { isSafeDomain } from "../lib/validators.js";
 import { BridgeError, runAudit } from "../pythonBridge.js";
 
 const router = Router();
@@ -16,6 +17,9 @@ router.get("/", async (_req, res, next) => {
 
 /** GET /api/audits/:domain — full report for one domain. */
 router.get("/:domain", async (req, res, next) => {
+  if (!isSafeDomain(req.params.domain)) {
+    return res.status(400).json({ error: `Invalid domain "${req.params.domain}".` });
+  }
   try {
     const report = await getAuditReport(req.params.domain);
     if (!report) {
@@ -34,6 +38,9 @@ router.get("/:domain", async (req, res, next) => {
  * entry point a CI pipeline would call.
  */
 router.post("/:domain/run", async (req, res, next) => {
+  if (!isSafeDomain(req.params.domain)) {
+    return res.status(400).json({ error: `Invalid domain "${req.params.domain}".` });
+  }
   try {
     const report = await runAudit(req.params.domain);
     await saveAuditReport(req.params.domain, report);
