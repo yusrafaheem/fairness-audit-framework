@@ -19,7 +19,15 @@ import { fileURLToPath } from "node:url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const PYTHON_BIN = process.env.PYTHON_BIN || "python3";
-const ENGINE_DIR = path.resolve(__dirname, "../../", process.env.ENGINE_DIR || "../engine");
+// __dirname is server/src, so two ".." gets to the repo root (server/src
+// -> server -> repo root); ENGINE_DIR is resolved from there, since
+// `engine/` is a sibling of `server/`, not of `server/src/`. Bug caught
+// while writing pythonBridge.test.js: the previous default appended a
+// third ".." ("../engine" on top of the "../../" prefix below), which
+// resolved one directory *above* the repo instead of into engine/ --
+// meaning a live audit run would always fail with a cwd-not-found spawn
+// error, regardless of whether Python/Fairlearn were installed at all.
+const ENGINE_DIR = path.resolve(__dirname, "../../", process.env.ENGINE_DIR || "engine");
 
 /**
  * Runs `fairaudit audit --domain <domain>` as a subprocess and parses
