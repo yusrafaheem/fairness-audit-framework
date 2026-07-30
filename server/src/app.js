@@ -41,7 +41,14 @@ export function createApp() {
   // eslint-disable-next-line no-unused-vars
   app.use((err, req, res, _next) => {
     console.error(err);
-    res.status(500).json({ error: err.message || "Internal server error" });
+    // express.json() rejects a malformed request body by calling next()
+    // with a SyntaxError that carries .status/.statusCode = 400 -- that
+    // got silently discarded here before, so a client sending broken
+    // JSON saw a generic 500 ("our fault") instead of a 400 ("your
+    // request was malformed"), which is both the wrong status code and
+    // actively misleading about whose bug to go look at.
+    const status = err.status || err.statusCode || 500;
+    res.status(status).json({ error: err.message || "Internal server error" });
   });
 
   return app;
